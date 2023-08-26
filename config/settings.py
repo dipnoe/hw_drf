@@ -42,9 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.admindocs',
 
     'rest_framework',
+    'django_filters',
+
     'users',
     'lesson',
     'course',
+    'payment',
 ]
 
 MIDDLEWARE = [
@@ -130,8 +133,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-#     ]
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+            'django_filters.rest_framework.DjangoFilterBackend',
+        )
+}
