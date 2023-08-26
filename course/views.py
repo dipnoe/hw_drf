@@ -6,5 +6,8 @@ from course.serializers import CourseSerializer
 
 
 class CourseViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet to display the list of all courses.
+    """
     serializer_class = CourseSerializer
     queryset = Course.objects.all()

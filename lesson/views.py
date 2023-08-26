@@ -5,26 +5,40 @@ from lesson.models import Lesson
 from lesson.serializers import LessonSerializer
 
 
-# Create your views here.
 class LessonListAPIView(ListAPIView):
+    """
+    API View for display the list of all lessons.
+    """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
 
 
 class LessonRetrieveAPIView(RetrieveAPIView):
+    """
+    API View to retrieve a single lesson.
+    """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
 
 
 class LessonCreateAPIView(CreateAPIView):
+    """
+    API View to create a new lesson.
+    """
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
 
 class LessonUpdateAPIView(UpdateAPIView):
+    """
+    API View to update a lesson.
+    """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
 
 
 class LessonDeleteAPIView(DestroyAPIView):
+    """
+    API View to delete a lesson.
+    """
     queryset = Lesson.objects.all()
