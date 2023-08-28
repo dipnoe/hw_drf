@@ -15,7 +15,7 @@ class CourseSerializer(serializers.ModelSerializer):
     - lesson_count (SerializerMethodField): The amount of lessons belongs to this course.
     """
     lesson_count = serializers.SerializerMethodField()
-    lessons = LessonSerializer(many=True)
+    lessons = LessonSerializer(many=True, required=False)
 
     class Meta:
         model = Course
