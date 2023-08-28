@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 
 from users.models import User
+from users.permissions import IsModerator
 from users.serializers import UserSerializer
 
 
@@ -12,6 +14,7 @@ class UserListAPIView(ListAPIView):
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticated, IsModerator]
 
 
 class UserCreateAPIView(CreateAPIView):
@@ -20,6 +23,7 @@ class UserCreateAPIView(CreateAPIView):
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
 
 
 class UserUpdateAPIView(UpdateAPIView):
@@ -28,3 +32,4 @@ class UserUpdateAPIView(UpdateAPIView):
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]

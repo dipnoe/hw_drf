@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
 
 from payment.models import Payment
 from payment.serializers import PaymentSerializer
@@ -14,6 +15,7 @@ class PaymentListView(ListAPIView):
     """
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
+    permission_classes = [IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['payment_method', 'paid_course', 'paid_lesson']

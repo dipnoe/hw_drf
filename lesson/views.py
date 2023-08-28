@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView, RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated
 
 from lesson.models import Lesson
 from lesson.serializers import LessonSerializer
+from users.models import UserRole
+from users.permissions import IsModerator, IsOwner
 
 
 class LessonListAPIView(ListAPIView):
@@ -11,6 +14,15 @@ class LessonListAPIView(ListAPIView):
     """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """ Returns queryset depending on the user's role."""
+        if self.request.user.role == UserRole.MODERATOR:
+            queryset = Lesson.objects.all()
+        else:
+            queryset = Lesson.objects.filter(owner=self.request.user)
+        return queryset
 
 
 class LessonRetrieveAPIView(RetrieveAPIView):
@@ -19,6 +31,7 @@ class LessonRetrieveAPIView(RetrieveAPIView):
     """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
 
 class LessonCreateAPIView(CreateAPIView):
@@ -27,6 +40,12 @@ class LessonCreateAPIView(CreateAPIView):
     """
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    permission_classes = [IsAuthenticated, ~IsModerator]
+
+    def perform_create(self, serializer):
+        new_lesson = serializer.save()
+        new_lesson.owner = self.request.user
+        new_lesson.save()
 
 
 class LessonUpdateAPIView(UpdateAPIView):
@@ -35,6 +54,7 @@ class LessonUpdateAPIView(UpdateAPIView):
     """
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    permission_classes = [IsAuthenticated, IsModerator | IsOwner]
 
 
 class LessonDeleteAPIView(DestroyAPIView):
@@ -42,3 +62,4 @@ class LessonDeleteAPIView(DestroyAPIView):
     API View to delete a lesson.
     """
     queryset = Lesson.objects.all()
+    permission_classes = [IsAuthenticated, IsOwner]
