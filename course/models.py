@@ -25,3 +25,22 @@ class Course(models.Model):
     class Meta:
         verbose_name = 'курс'
         verbose_name_plural = 'курсы'
+
+
+class Subscription(models.Model):
+    """
+    Model representing a subscription.
+
+    Fields:
+    - course (ForeignKey): The course associated with the subscription.
+    - user (ForeignKey): The user who subscribed to the course.
+    """
+    course = models.ForeignKey('course.Course', on_delete=models.CASCADE, verbose_name='курс')
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='пользователь', **NULLABLE)
+
+    def __str__(self):
+        return f'{self.user} подписался на обновления курса {self.course}'
+
+    class Meta:
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
