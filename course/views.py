@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework.generics import CreateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from course.models import Course
-from course.serializers import CourseSerializer
+from course.models import Course, Subscription
+from course.paginators import CoursePaginator
+from course.serializers import CourseSerializer, SubscriptionSerializer
 from users.permissions import IsModerator, IsOwner
 
 
@@ -13,6 +15,8 @@ class CourseViewSet(viewsets.ModelViewSet):
     """
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+
+    pagination_class = CoursePaginator
 
     def perform_create(self, serializer):
         """
@@ -39,3 +43,28 @@ class CourseViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated, IsOwner]
 
         return [permission() for permission in permission_classes]
+
+
+class SubscriptionCreateAPIView(CreateAPIView):
+    """
+    API View to create a subscription.
+    """
+    queryset = Subscription.objects.all()
+    serializer_class = SubscriptionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        """
+        Save the owner during the creation.
+        """
+        new_sub = serializer.save()
+        new_sub.user = self.request.user
+        new_sub.save()
+
+
+class SubscriptionDeleteAPIView(DestroyAPIView):
+    """
+    API View to delete a subscription.
+    """
+    queryset = Subscription.objects.all()
+    permission_classes = [IsAuthenticated]
