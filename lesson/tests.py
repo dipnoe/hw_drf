@@ -9,26 +9,39 @@ from users.models import User
 
 class LessonTestCase(APITestCase):
 
+    def create_moderator(self):
+        self.moderator = User.objects.create(
+            email='moderator@test.test',
+            role='moderator'
+        )
+        self.moderator.set_password('12345')
+        self.moderator.save()
+
+    def create_member(self):
+        self.member = User.objects.create(
+            email='member@test.test',
+        )
+        self.member.set_password('12345')
+        self.member.save()
+
     def setUp(self):
+
+        self.create_moderator()
+        self.create_member()
+
         self.course = Course.objects.create(
             name='тестовый курс'
         )
 
-        self.user = User.objects.create(
-            email='test@test.test'
-        )
-        self.user.set_password('12345')
-        self.user.save()
-
         self.lesson = Lesson.objects.create(
             name='тестовый урок',
             course=self.course,
-            owner=self.user
+            owner=self.member
         )
 
     def test_get_list(self):
         """ Test for getting list of lessons. """
-        self.client.force_authenticate(self.user)
+        self.client.force_authenticate(self.moderator)
         response = self.client.get(
             reverse('lesson:lesson_list')
         )
@@ -51,7 +64,7 @@ class LessonTestCase(APITestCase):
                         "preview": None,
                         "video_link": None,
                         "course": self.course.pk,
-                        "owner": self.user.pk
+                        "owner": self.member.pk
                     }
                 ]
             }
@@ -64,10 +77,10 @@ class LessonTestCase(APITestCase):
             'description': 'test description',
             'video_link': 'https://www.youtube.com/watch?v=ygwW-VnWeMI&ab_channel=Seether',
             'course': self.course.pk,
-            'owner': self.user.pk
+            'owner': self.member.pk
         }
 
-        self.client.force_authenticate(self.user)
+        self.client.force_authenticate(self.member)
 
         response = self.client.post(
             reverse('lesson:lesson_create'),
@@ -91,10 +104,10 @@ class LessonTestCase(APITestCase):
             'description': 'test description',
             'video_link': 'https://www.youtube.com/watch?v=ygwW-VnWeMI&ab_channel=Seether',
             'course': self.course.pk,
-            'owner': self.user.pk
+            'owner': self.member.pk
         }
 
-        self.client.force_authenticate(self.user)
+        self.client.force_authenticate(self.member)
 
         response = self.client.patch(
             reverse('lesson:lesson_update', kwargs={'pk': self.lesson.pk}),
@@ -113,7 +126,7 @@ class LessonTestCase(APITestCase):
 
     def test_delete_lesson(self):
         """ Test for deleting the lesson. """
-        self.client.force_authenticate(self.user)
+        self.client.force_authenticate(self.member)
 
         response = self.client.delete(
             reverse('lesson:lesson_delete', kwargs={'pk': self.lesson.pk}),
