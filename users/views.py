@@ -19,7 +19,7 @@ class UserListAPIView(ListAPIView):
 
 class UserCreateAPIView(CreateAPIView):
     """
-    API view for update a user.
+    API view for create a user.
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
