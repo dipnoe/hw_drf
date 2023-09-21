@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework_simplejwt',
+    'drf_yasg',
 
     'users',
     'lesson',
@@ -89,7 +90,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': getenv('DB_NAME'),
         'USER': getenv('DB_USER'),
-        'PASSWORD': getenv('DB_PASSWORD'),
+        'PASSWORD': '12345',
+        # 'PASSWORD': getenv('DB_PASSWORD'),
+        # 'HOST': 'db'
     }
 }
 

@@ -15,6 +15,7 @@ class PaymentSerializer(serializers.ModelSerializer):
     - paid_course (ForeignKey): Paid course.
     - paid_lesson (ForeignKey): Paid lesson.
     """
+
     class Meta:
         model = Payment
         fields = '__all__'
