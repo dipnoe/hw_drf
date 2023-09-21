@@ -59,7 +59,7 @@ class PaymentCreateView(CreateAPIView):
         )
 
         user = self.request.user
-        payment = Payment.objects.create(
+        Payment.objects.create(
             user=user,
             payment_date=datetime.date.today(),
             payment_amount=course.price,
