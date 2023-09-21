@@ -16,6 +16,7 @@ class Course(models.Model):
     name = models.CharField(max_length=100, verbose_name='название')
     description = models.TextField(verbose_name='описание', **NULLABLE)
     preview = models.ImageField(verbose_name='первью', **NULLABLE)
+    price = models.PositiveIntegerField(verbose_name='цена', default=2000)
 
     owner = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='владелец', **NULLABLE)
 
