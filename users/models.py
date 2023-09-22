@@ -20,6 +20,8 @@ class User(AbstractUser):
     - phone (PositiveIntegerField): Phone number of the user.
     - city (CharField): City where the user is located.
     - avatar (ImageField): Avatar image of the user.
+    - is_active (BooleanField): Active user or not.
+    - last_login (
     - role (CharField): The field defines the general access rights.
     """
 
@@ -28,6 +30,8 @@ class User(AbstractUser):
     phone = models.PositiveIntegerField(verbose_name='телефон', unique=True, **NULLABLE)
     city = models.CharField(max_length=50, verbose_name='город', **NULLABLE)
     avatar = models.ImageField(upload_to='users/', verbose_name='аватар', **NULLABLE)
+    is_active = models.BooleanField(verbose_name='акивность', default=True)
+    last_login = models.DateField(verbose_name='дата последнего входа', auto_now=True, **NULLABLE)
 
     role = models.CharField(max_length=9, choices=UserRole.choices, default=UserRole.MEMBER)
 

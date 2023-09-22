@@ -1,11 +1,12 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.generics import CreateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
+from config import settings
 from course.models import Course, Subscription
 from course.paginators import CoursePaginator
 from course.serializers import CourseSerializer, SubscriptionSerializer
+from course.tasks import send_sub_mail
 from users.permissions import IsModerator, IsOwner
 
 
@@ -60,6 +61,7 @@ class SubscriptionCreateAPIView(CreateAPIView):
         new_sub = serializer.save()
         new_sub.user = self.request.user
         new_sub.save()
+        send_sub_mail.apply_async(kwargs={"course": self.request.data['course'], "email": new_sub.user.email})
 
 
 class SubscriptionDeleteAPIView(DestroyAPIView):
